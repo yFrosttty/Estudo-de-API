@@ -1,0 +1,20 @@
+{
+  "name": "06_express_mysql",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/App.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "API"
+  ],
+  "author": "Thales",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "express": "^4.21.2",
+    "mysql2": "^3.13.0"
+  }
+}
