@@ -5,7 +5,7 @@ import mysql from 'mysql2/promise';
 const conexao = mysql.createPool(db);
 
 //Criando Produto
-const criandoProduto = async (nomeProduto) => {
+export const criandoProduto = async (nomeProduto) => {
     console.log('ProdutoModel :: criandoProduto');
 
     const sql = 'INSERT INTO produtos (nome_produto) VALUES (?)';
@@ -14,14 +14,15 @@ const criandoProduto = async (nomeProduto) => {
 
     try {
         const resposta = await conexao.query(sql, params);
-        console.log(resposta);
+        // console.log(resposta);
+        return [201, {mensagem: 'Produto cadastrado com sucesso'}];
     } catch (error) {
         console.error(error);
     }
 }
 
 // Mostrando produtos da tabela
-const mostrarProdutos =  async () => {
+export const mostrarProdutos =  async () => {
     console.log('ProdutoModel :: mostrarProdutos');
 
     //SQL para realizar consulta
@@ -29,31 +30,41 @@ const mostrarProdutos =  async () => {
     try {
         //Pegando primeiro array de resposta
         const [resposta] = await conexao.query(sql);
-        console.log(resposta);
+        // console.log(resposta);
+        return [200, resposta];
     } catch (error) {
         console.error(error);
     }
 }
 
-const atualizandoProduto = async (id_produtos, nomeProduto) => {
+export const atualizandoProduto = async (id_produto, nomeProduto) => {
     console.log('ProdutoModel :: atualizandoProduto');
 
-    const sql = 'UPDATE produtos SET nome_produto = ? WHERE id_produtos = ?';
+    const sql = 'UPDATE produtos SET nome_produto = ? WHERE id_produto = ?';
 
-    const params = [nomeProduto, id_produtos];
+    const params = [nomeProduto, id_produto];
 
     try {
         const [resposta] = await conexao.query(sql, params);
-        console.log(resposta);
+        // console.log(resposta);
+        if(resposta.affectedRows < 1){
+            return [404, {mensagem: 'Produto não encontrado'}];
+        } else {
+            return [200, {mensagem: 'Produto alterado com sucesso'}];
+        }
     } catch (error) {
-        console.error(error);   
+        // console.error(error);   
+        return [500, {mensagem: 'Erro Servidor', 
+            code:error.code,
+            sql:error.sqlMessage
+        }];
     }
 }
 
-const deletandoProduto = async (id_produtos) => {
+export const deletandoProduto = async (id_produto) => {
     console.log('ProdutoModel :: deletandoProduto');
-    const sql = 'DELETE FROM produtos WHERE id_produtos = ?';
-    const params = [id_produtos];
+    const sql = 'DELETE FROM produtos WHERE id_produto = ?';
+    const params = [id_produto];
 
     try {
         const [resposta] = await conexao.query(sql, params);
@@ -68,11 +79,11 @@ const deletandoProduto = async (id_produtos) => {
             code:error.code,
             sql:error.sqlMessage
         }];
-        console.error(error);
+        // console.error(error);
     }
 }
 
-console.log(await deletandoProduto(1));
-// atualizandoProduto(6, 'kiwires');
+// console.log(await deletandoProduto(1));
+// atualizandoProduto(4, 'salmonela');
 //criandoProduto('melão');
 //mostrarProdutos();
